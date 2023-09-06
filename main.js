@@ -226,10 +226,11 @@ loader1.load('./robot_gltf/link0.glb', function (gltf) {
 
 function onWindowResize() {
 
-    camera.aspect = window.innerWidth / window.innerHeight;
+    // camera.aspect = window.innerWidth / window.innerHeight;
+    camera.aspect  = 1.333;
     camera.updateProjectionMatrix();
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(768, 576);
 
 }
 
