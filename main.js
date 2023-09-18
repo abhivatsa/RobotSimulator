@@ -92,7 +92,11 @@ socket.onerror = function (error) {
 // const container = document.createElement( 'div' );
 // document.body.appendChild( container );
 
+console.log("line 95");
+
 const container = document.getElementById("render-container");
+
+console.log(container);
 
 let camera, scene, renderer, stats;
 
@@ -223,6 +227,7 @@ loader1.load('./robot_gltf/link0.glb', function (gltf) {
 
 });
 
+onWindowResize();
 
 function onWindowResize() {
 
