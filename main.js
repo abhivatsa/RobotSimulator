@@ -58,15 +58,11 @@ socket.onopen = function (e) {
 };
 
 socket.onmessage = function (event) {
-    console.log(`[message] Data received from server`);
-    let joint_data = JSON.parse(event.data);
-    //   console.log(obj.data)
-    link1.rotation.y = joint_data.j1_pos;
-    link2.rotation.z = joint_data.j2_pos;
-    link3.rotation.z = joint_data.j3_pos;
-    link4.rotation.y = joint_data.j4_pos;
-    link5.rotation.z = joint_data.j5_pos;
-    link6.rotation.y = joint_data.j6_pos;
+    // console.log(`[message] Data received from server`);
+    let incomint_data = JSON.parse(event.data);
+    updateRobotState(incomint_data.current_state.positions);
+    updateSystemState(incomint_data.system_state);
+    //   console.log(incomint_data)
 };
 
 socket.onclose = function (event) {
@@ -91,8 +87,6 @@ socket.onerror = function (error) {
 // ------------------------- ThreeJS ---------------------------
 // const container = document.createElement( 'div' );
 // document.body.appendChild( container );
-
-console.log("line 95");
 
 const container = document.getElementById("render-container");
 
@@ -224,7 +218,6 @@ loader1.load('./robot_gltf/link0.glb', function (gltf) {
         });
 
     });
-
 });
 
 onWindowResize();
@@ -244,8 +237,6 @@ function onWindowResize() {
 var y_val = 0;
 function animate() {
 
-
-
     requestAnimationFrame(animate);
 
     const delta = clock.getDelta();
@@ -254,38 +245,136 @@ function animate() {
 
     renderer.render(scene, camera);
 
-    // link4.rotation.y = -1.5708;
-    // link5.rotation.y = -1.5708;
-    // link6.rotation.y = -1.5708;
-
-    // link0.position.setX(0);
-    // link0.position.setY(0);
-    // link0.position.setZ(0.2);
-
-    // link1.rotation.y = y_val;
-    // link2.rotation.z = -y_val;
-    // link3.rotation.z = -y_val;
-    // link4.rotation.y = y_val;
-    // link5.rotation.z = -y_val;
-    // link6.rotation.y = y_val;
-
-    // link1.rotation.y = points.j1;
-    // link2.rotation.z = points.j2;
-    // link3.rotation.z = points.j3;
-    // link4.rotation.y = points.j4;
-    // link5.rotation.z = points.j5;
-    // link6.rotation.y = points.j6;
-
-    // 
     y_val = y_val + 0.01;
-
-    // stats.update();
-
+    
 }
-
 
 animate();
 
-//-----------------------------------------------------------
+function updateRobotState(positions)
+{
+    link1.rotation.y = positions.joint1;
+    link2.rotation.z = positions.joint2;
+    link3.rotation.z = positions.joint3;
+    link4.rotation.y = positions.joint4;
+    link5.rotation.z = positions.joint5;
+    link6.rotation.y = positions.joint6;
+}
+var prev_state = 0;
+function updateSystemState(state) 
+{
+    if(prev_state == state.power_on_status)
+    {
+        return;
+    }
+    // update the data    
+    if(state.power_on_status == 3) // power on
+    {
+        enableButtons(true);
+        enablePowerBtn(false);
+
+        systemStateSpinner.classList.add("visually-hidden");
+        systemStateText.innerHTML = "Ready";
+
+        console.log("power on");
+    }
+    else if(state.power_on_status == 0) // power off
+    {
+        enableButtons(false);
+        enablePowerBtn(true);
+
+        systemStateSpinner.classList.add("visually-hidden");
+        systemStateText.innerHTML = "Powered OFF";
+
+        console.log("power off");
+    }
+    else if(state.power_on_status == 1) // initializing system
+    {
+        enableButtons(false);
+        enablePowerBtn(false);
+
+        systemStateSpinner.classList.remove("visually-hidden");
+        systemStateText.innerHTML = "Initializing System...";
+
+        console.log("Initializing System...");
+    }
+    else // harware check
+    {
+        enableButtons(false);
+        enablePowerBtn(false);
+
+        systemStateSpinner.classList.remove("visually-hidden");
+        systemStateText.textContent = "Hardware check...";
+
+        console.log("Hardware check...");
+    }
+    prev_state = state.power_on_status;
+}
+
+function powerBtnClicked()
+{
+    console.log("btn clicked");
+    var cmd_obj =
+    { 
+        system_data : {
+            power_on: powerBtn.checked,
+            }
+    };
+    socket.send(JSON.stringify(cmd_obj));
+    console.log(cmd_obj);
+}
 
 
+//------------------------DOM Manipulation-----------------------------------
+
+
+// // Define event handler
+const handler = e => {
+    console.log(`Document is ready!`)
+    
+    // disable the buttons
+    enableButtons(false);
+
+    
+  }
+  
+// // Listen for `DOMContentLoaded` event
+document.addEventListener('DOMContentLoaded', handler)
+
+const input_control_tab = document.getElementById("inputControl");
+const input_switchs = document.getElementsByTagName("input");
+const powerBtn = document.getElementById("powerOnMode");
+const systemStateText = document.getElementById("systemState");
+const systemStateContainer = document.getElementById("systemStateContainer");
+const systemStateSpinner = document.getElementById("systemStateSpinner");
+
+
+
+// enable disble the buttons
+function enableButtons(state) 
+{
+    for (let index = 0; index < input_switchs.length; index++) {
+        const element = input_switchs[index];
+        if(element.getAttribute("id") == "powerOnMode")
+        {
+            continue;
+        }
+        element.disabled = !state;
+    }
+    if(state)
+    {
+        input_control_tab.classList.remove("disabled");
+    }
+    else
+    {
+        input_control_tab.classList.add("disabled")
+    } 
+}
+
+// enable/disable power btn
+function enablePowerBtn(state) {
+    powerBtn.disabled = !state;
+}
+
+powerBtn.addEventListener('change', powerBtnClicked);
+//-----------------------------------------------------------------------

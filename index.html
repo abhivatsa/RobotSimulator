@@ -40,12 +40,12 @@
 
     <main class="main-container">
 
-        <aside class="input-control">
+        <aside class="input-control" id="inputControl">
 
             <div class="mode-selection">
                 <div class="joint_name">Enable teach Mode</div>
                 <label class="switch">
-                    <input type="checkbox" checked>
+                    <input type="checkbox" disabled id="teachMode">
                     <span class="slider round"></span>
                 </label>
             </div>
@@ -53,7 +53,7 @@
             <div class="mode-selection">
                 <div class="joint_name">Enable Hand Controllers</div>
                 <label class="switch">
-                    <input type="checkbox" checked>
+                    <input type="checkbox" disabled id="handController">
                     <span class="slider round"></span>
                 </label>
             </div>
@@ -533,15 +533,23 @@
         <div class="simulation-mode">
             <div class="joint_name">Simulation</div>
             <label class="switch">
-                <input type="checkbox" checked>
+                <input type="checkbox" checked id="simulationMode">
                 <span class="slider round"></span>
             </label>
         </div>
 
+        <div class="system_state" id="systemStateContainer">
+            <div class="spinner-border spinner-border-sm visually-hidden" role="status" id="systemStateSpinner">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <span role="status" id="systemState">Powered OFF</span>
+        </div>
+        
+
         <div class="power-on-mode">
             <div class="joint_name">Power on</div>
             <label class="switch">
-                <input type="checkbox" checked>
+                <input type="checkbox" unchecked id="powerOnMode">
                 <span class="slider round"></span>
             </label>
         </div>

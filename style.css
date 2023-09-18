@@ -229,3 +229,14 @@ input:checked+.slider:before {
     /* border: 2px solid red; */
     width: 200px;
 }
+
+.system_state{
+    align-items: center;
+    justify-content: space-between;
+    width: 200px;
+}
+
+.disabled{
+    opacity: 0.5;
+    /* color: red; */
+}
