@@ -362,10 +362,13 @@ function onJogClicked(mode, index, dir)
     // send jog commands
     if(!checkState())
     {
-        let m = 2;
+        var m = 2;
         if(mode == "joint_space")
         {
-            let m = 1
+             m = 0;
+        }
+        else if(mode == "task_space"){
+            m = 1;
         } 
         var cmd_obj =
         { 
@@ -544,8 +547,10 @@ powerBtn.addEventListener('click', powerBtnClicked);
 // jog Button event handler
 for (let index = 0; index < jogButtons.length; index++) {
     const element = jogButtons[index];
-    element.onmousedown = ()=> {onClickAndHold(element.getAttribute("mode"),element.getAttribute("index"), element.getAttribute("direction"))};
+    // element.onmousedown = ()=> {onClickAndHold(element.getAttribute("mode"),element.getAttribute("index"), element.getAttribute("direction"))};
+    element.onmousedown = ()=> {onJogClicked(element.getAttribute("mode"),element.getAttribute("index"), element.getAttribute("direction"))};
     element.onmouseup = function () {
+        onJogClicked("none",element.getAttribute("index"), element.getAttribute("direction"))
         clearTimeout(t);
     }
 }
