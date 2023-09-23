@@ -550,9 +550,10 @@ for (let index = 0; index < jogButtons.length; index++) {
     // element.onmousedown = ()=> {onClickAndHold(element.getAttribute("mode"),element.getAttribute("index"), element.getAttribute("direction"))};
     element.onmousedown = ()=> {onJogClicked(element.getAttribute("mode"),element.getAttribute("index"), element.getAttribute("direction"))};
     element.onmouseup = function () {
-        onJogClicked("none",element.getAttribute("index"), element.getAttribute("direction"))
+        onJogClicked("none",element.getAttribute("index"), element.getAttribute("direction"));
         clearTimeout(t);
     }
+    element.onmouseleave = () => onJogClicked("none",element.getAttribute("index"), element.getAttribute("direction"));
 }
 
 
