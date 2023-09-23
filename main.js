@@ -4,57 +4,13 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 import Stats from 'three/addons/libs/stats.module.js';
 
-function update_status(){
-
-    var cmd_json = {
-        "j1_tar_pos": joint_1_position,
-        "j2_tar_pos": joint_2_position,
-        "j3_tar_pos": joint_3_position,
-        "jog_mode_enable": 0,
-    };
-
-    console.log("Hello world");
-
-    socket.send(JSON.stringify(cmd_json));
-
-}
-
-
 //-------------------- Websocket -----------------------
 let socket = new WebSocket("ws://127.0.0.1:8080");
 // var btn = document.getElementById("btn");
 socket.onopen = function (e) {
     console.log("[open] Connection established");
     console.log("Sending to server");
-
-    // setInterval(update_status, 10);
-
-    // btn.onclick = function () {
-    //     var points = [[1.5, -1.5, -1, -2, 0.5, -0.5], [-1.5, 1.5, 0, 2, -0.5, 0.5], [1.5, -1.5, 1, 0, 0.5, -0.5], [0, 1.5, 0, 2, 1, 0]];
-    //     var vel = [[1.5, 1.5, 1.5, 1.5, 1.5, 1.5], [1.5, 1.5, 1.5, 1.5, 1.5, 1.5], [1.5, 1.5, 1.5, 1.5, 1.5, 1.5], [1.5, 1.5, 1.5, 1.5, 1.5, 1.5]];
-    //     var acc = [[1.5, 1.5, 1.5, 1.5, 1.5, 1.5], [1.5, 1.5, 1.5, 1.5, 1.5, 1.5], [1.5, 1.5, 1.5, 1.5, 1.5, 1.5], [1.5, 1.5, 1.5, 1.5, 1.5, 1.5]];
-    //     var time = [-1, -1, -1, -1]
-    //     //   var obj = {name : "shubham", age : "26", city : "Hyderabad"};
-    //     var obj = {
-    //         type: 1,
-    //         plan_order: ["one"],
-    //         one: {
-    //             joint_space: true,
-    //             points: points,
-    //             velocity: vel,
-    //             acceleration: acc,
-    //             time: time,
-    //             num_loops: 1
-    //         }
-    //     }
-    //     const myObj = JSON.stringify(obj);
-
-    //     //   var obj = {data : "hi from client", }
-    //     console.log(`[message] Data sending to server`);
-    //     //   console.log("hi from client");
-    //     //   const myObj = JSON.stringify(obj);
-    //     // socket.send(myObj);
-    // }
+    mychart.update();
 };
 
 socket.onmessage = function (event) {
@@ -133,6 +89,14 @@ renderer.setPixelRatio(window.devicePixelRatio);
 // renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setSize(container.innerWidth, container.innerHeight);
 renderer.shadowMap.enabled = true;
+
+
+
+var div = document.createElement('div');
+div.style.position = "absolute";
+div.innerHTML = "hello";//'<canvas id="myChart" width="400" height="150" style="position: absolute;"></canvas>';
+renderer.domElement.appendChild(div);
+
 container.appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -250,16 +214,70 @@ function animate() {
 }
 
 animate();
+// -----------------------------------------------------------------------------------------------------
 
+var current_time = 0;
+var joint_positions = [0,0,0,0,0,0];
+
+// Update robot state
+var update_cart_data_done = false;
 function updateRobotState(positions)
 {
+    // console.log(positions);
     link1.rotation.y = positions.joint1;
     link2.rotation.z = positions.joint2;
     link3.rotation.z = positions.joint3;
     link4.rotation.y = positions.joint4;
     link5.rotation.z = positions.joint5;
     link6.rotation.y = positions.joint6;
+
+    joint_val_1.innerText = positions.joint1.toFixed(2);
+    joint_val_2.innerText = positions.joint2.toFixed(2);
+    joint_val_3.innerText = positions.joint3.toFixed(2);
+    joint_val_4.innerText = positions.joint4.toFixed(2);
+    joint_val_5.innerText = positions.joint5.toFixed(2);
+    joint_val_6.innerText = positions.joint6.toFixed(2);
+
+    j1_slider.value = convertValToRange(positions.joint1, 0);
+    j2_slider.value = convertValToRange(positions.joint2, 0);
+    j3_slider.value = convertValToRange(positions.joint3, 0);
+    j4_slider.value = convertValToRange(positions.joint4, 0);
+    j5_slider.value = convertValToRange(positions.joint5, 0);
+    j6_slider.value = convertValToRange(positions.joint6, 0);
+
+    current_time = current_time + 0.001;
+    joint_positions[0] = positions.joint1;
+    joint_positions[1] = positions.joint2;
+    joint_positions[2] = positions.joint3;
+    joint_positions[3] = positions.joint4;
+    joint_positions[4] = positions.joint5;
+    joint_positions[5] = positions.joint6;
+    // updateChartData(positions);
 }
+
+function updateChartData()
+{
+    if(mychart.data.labels.length >= 10)
+    {
+        mychart.data.labels.shift();
+        mychart.data.datasets[0].data.shift();
+        mychart.data.datasets[1].data.shift();
+        mychart.data.datasets[2].data.shift();
+        mychart.data.datasets[3].data.shift();
+        mychart.data.datasets[4].data.shift();
+        mychart.data.datasets[5].data.shift();
+    }
+    mychart.data.labels.push(current_time.toFixed(2));
+    mychart.data.datasets[0].data.push(joint_positions[0].toFixed(2));
+    mychart.data.datasets[1].data.push(joint_positions[1].toFixed(2));
+    mychart.data.datasets[2].data.push(joint_positions[2].toFixed(2));
+    mychart.data.datasets[3].data.push(joint_positions[3].toFixed(2));
+    mychart.data.datasets[4].data.push(joint_positions[4].toFixed(2));
+    mychart.data.datasets[5].data.push(joint_positions[5].toFixed(2));
+    mychart.update();
+}
+
+// Update system state
 var prev_state = 0;
 function updateSystemState(state) 
 {
@@ -271,8 +289,8 @@ function updateSystemState(state)
     if(state.power_on_status == 3) // power on
     {
         enableButtons(true);
-        enablePowerBtn(false);
-
+        enablePowerBtn(true);
+        powerBtn.checked = true;
         systemStateSpinner.classList.add("visually-hidden");
         systemStateText.innerHTML = "Ready";
 
@@ -298,7 +316,7 @@ function updateSystemState(state)
 
         console.log("Initializing System...");
     }
-    else // harware check
+    else if(state.power_on_status == 2) // harware check
     {
         enableButtons(false);
         enablePowerBtn(false);
@@ -308,12 +326,26 @@ function updateSystemState(state)
 
         console.log("Hardware check...");
     }
+    else // In execution
+    {
+        enableButtons(false);
+        enablePowerBtn(false);
+        systemStateSpinner.classList.remove("visually-hidden");
+        systemStateText.textContent = "Executing...";
+
+        console.log("Executing...");
+    }
     prev_state = state.power_on_status;
 }
 
+// Send json on Power button click
 function powerBtnClicked()
 {
     console.log("btn clicked");
+    if(!powerBtn.checked)
+    {
+        enableButtons(false);
+    }
     var cmd_obj =
     { 
         system_data : {
@@ -324,10 +356,71 @@ function powerBtnClicked()
     console.log(cmd_obj);
 }
 
+// Send json on Jog btn click
+function onJogClicked(mode, index, dir)
+{
+    // send jog commands
+    if(!checkState())
+    {
+        let m = 2;
+        if(mode == "joint_space")
+        {
+            let m = 1
+        } 
+        var cmd_obj =
+        { 
+            command_data : {
+                type: 1,
+                mode: m,
+                index: parseInt(index),
+                direction: parseInt(dir)
+                }
+        };
+        socket.send(JSON.stringify(cmd_obj));
+    }
+}
+
+// Click and hold jog button callback
+var t;
+function onClickAndHold (mode, index, dir) {
+    onJogClicked(mode, index, dir);
+    t = setInterval(onJogClicked, 1000, mode, index, dir);
+}
+
+
+// Mode of operation change handle
+function onModeChangeClicked(element)
+{
+    if(checkState(element))
+    {
+        element.checked = false;
+    }
+    if(checkState())
+    {
+        simulationMode.disabled = true;
+        enablePowerBtn(false);
+        
+    }
+    else
+    {
+        simulationMode.disabled = false;
+        enablePowerBtn(true);
+    }
+}
+
+function convertValToRange(val, type)
+{
+    if(type == 0) // radians
+    {
+        return val*800000/(2*Math.PI);
+    }
+    else
+    {
+        return val*800000/2.0;
+    }
+}
 
 //------------------------DOM Manipulation-----------------------------------
-
-
 // // Define event handler
 const handler = e => {
     console.log(`Document is ready!`)
@@ -335,15 +428,62 @@ const handler = e => {
     // disable the buttons
     enableButtons(false);
 
+    chart_container.style.display = "none";
+
     
-  }
+}
   
 // // Listen for `DOMContentLoaded` event
 document.addEventListener('DOMContentLoaded', handler)
 
 const input_control_tab = document.getElementById("inputControl");
-const input_switchs = document.getElementsByTagName("input");
+
+// Input sliders
+const teachMode = document.getElementById("teachMode");
+const handControllerMode = document.getElementById("handController");
+const simulationMode = document.getElementById("simulationMode");
 const powerBtn = document.getElementById("powerOnMode");
+const jogButtons = document.getElementsByClassName("jog");
+
+
+var buttons = [teachMode, handControllerMode, simulationMode];
+
+// joint values
+var joint_val_1 = document.getElementById("joint_val_1");
+var joint_val_2 = document.getElementById("joint_val_2");
+var joint_val_3 = document.getElementById("joint_val_3");
+var joint_val_4 = document.getElementById("joint_val_4");
+var joint_val_5 = document.getElementById("joint_val_5");
+var joint_val_6 = document.getElementById("joint_val_6");
+
+// cartesian values
+var cart_val_x = document.getElementById("cart_val_x");
+var cart_val_y = document.getElementById("cart_val_y");
+var cart_val_z = document.getElementById("cart_val_z");
+var cart_val_roll = document.getElementById("cart_val_roll");
+var cart_val_pitch = document.getElementById("cart_val_pitch");
+var cart_val_yaw = document.getElementById("cart_val_yaw");
+
+// joint sliders
+var j1_slider = document.getElementById("slider_j1");
+var j2_slider = document.getElementById("slider_j2");
+var j3_slider = document.getElementById("slider_j3");
+var j4_slider = document.getElementById("slider_j4");
+var j5_slider = document.getElementById("slider_j5");
+var j6_slider = document.getElementById("slider_j6");
+
+// Cartesian Sliders
+var x_slider = document.getElementById("slider_x");
+var y_slider = document.getElementById("slider_y");
+var z_slider = document.getElementById("slider_z");
+var roll_slider = document.getElementById("slider_roll");
+var pitch_slider = document.getElementById("slider_pitch");
+var yaw_slider = document.getElementById("slider_yaw");
+
+
+var graph_btn = document.getElementById("graphBtn");
+var chart_container = document.getElementById("chartContainer");
+
 const systemStateText = document.getElementById("systemState");
 const systemStateContainer = document.getElementById("systemStateContainer");
 const systemStateSpinner = document.getElementById("systemStateSpinner");
@@ -353,14 +493,16 @@ const systemStateSpinner = document.getElementById("systemStateSpinner");
 // enable disble the buttons
 function enableButtons(state) 
 {
-    for (let index = 0; index < input_switchs.length; index++) {
-        const element = input_switchs[index];
-        if(element.getAttribute("id") == "powerOnMode")
-        {
-            continue;
-        }
-        element.disabled = !state;
+    teachMode.disabled = !state;
+    handControllerMode.disabled = !state;
+    simulationMode.disabled = !state;
+    move_test.disabled = !state;
+
+    for (let index = 0; index < jogButtons.length; index++)
+    {
+        jogButtons[index].disabled = !state;
     }
+
     if(state)
     {
         input_control_tab.classList.remove("disabled");
@@ -371,10 +513,171 @@ function enableButtons(state)
     } 
 }
 
+// Check state of the buttons
+function checkState(element)
+{
+    if(!powerBtn.checked)
+    {
+        return !powerBtn.checked;
+    }
+    else if(element == teachMode)
+    {
+        return handControllerMode.checked;
+    }
+    else if(element == handControllerMode)
+    {
+        return teachMode.checked;
+    }
+    else
+    {
+        return (teachMode.checked || handControllerMode.checked);
+    }
+}
+
 // enable/disable power btn
 function enablePowerBtn(state) {
     powerBtn.disabled = !state;
 }
 
-powerBtn.addEventListener('change', powerBtnClicked);
+powerBtn.addEventListener('click', powerBtnClicked);
+
+// jog Button event handler
+for (let index = 0; index < jogButtons.length; index++) {
+    const element = jogButtons[index];
+    element.onmousedown = ()=> {onClickAndHold(element.getAttribute("mode"),element.getAttribute("index"), element.getAttribute("direction"))};
+    element.onmouseup = function () {
+        clearTimeout(t);
+    }
+}
+
+
+// Mode button event handler
+teachMode.onclick  = () => {onModeChangeClicked(teachMode)};
+handControllerMode .onclick = () => {onModeChangeClicked(handControllerMode)};
+
+
+graph_btn.addEventListener("click", ()=>{
+    console.log("clicked")
+    if(chart_container.style.display == "none")
+    {
+       chart_container.style.display = "block";
+    }
+    else
+    {
+        chart_container.style.display = "none";
+    }
+})
+
 //-----------------------------------------------------------------------
+
+
+//--------------------------- TEST BUTTONS-----------------------------------------------------------
+var move_test = document.getElementById("move_test");
+move_test.onclick = ()=>{
+    var cmd_obj =
+        { 
+            command_data : {
+                type: 2,
+                }
+        };
+        socket.send(JSON.stringify(cmd_obj));
+}
+
+
+
+
+
+//-------------------------------------- CHART JS --------------------
+var mychart = new Chart("myChart", {
+    type: "line",
+    data: {
+        labels: Array(10).fill(0),
+    datasets: [{
+        data: Array(10).fill(0),
+        borderColor: "red",
+        fill: false,
+        label: 'joint 1',
+        radius: 1,
+        title: "J1",
+        },{
+        data: Array(10).fill(0),
+        borderColor: "green",
+        fill: false,
+        label: 'joint 2',
+        radius: 1
+        },{
+        data: Array(10).fill(0),
+        borderColor: "blue",
+        fill: false,
+        label: 'joint 3',
+        radius: 1
+        },{
+        data: Array(10).fill(0),
+        borderColor: "black",
+        fill: false,
+        label: 'joint 4',
+        radius: 1
+        },{
+        data: Array(10).fill(0),
+        borderColor: "violet",
+        fill: false,
+        label: 'joint 5',
+        radius: 1
+    },{
+        data: Array(10).fill(0),
+        borderColor: "tint",
+        fill: false,
+        label: 'joint 6',
+        radius: 1
+    }
+]
+    },
+    options: {
+        legend: {display: false},
+        points:{radius: 0.1, borderWidth: 0.1},
+        scales: {
+        x: [{
+            ticks: {
+            callback: function(val) {
+                return val.toFixed(2);
+            }
+            },
+        }],
+        // xAxes: [
+        //     {scaleLabel: {
+        //         display: true,
+        //         labelString: 'time (s)'
+        //       }}
+        // ],
+        yAxes : [{
+            ticks : {
+                max : 3.14,    
+                min : -3.14,
+                stepSize: 0.1
+            },
+            scaleLabel: {
+                display: true,
+                labelString: 'Joint Position (rad)'
+              }
+        }]
+        },
+        animation: false,
+        legend: {
+                display: true,
+                position : "bottom",
+                maxSize : {
+                    height : 50
+                },
+            labels : {
+                usePointStyle : true
+            }
+        },
+        // events: [] 
+    }        
+    });
+
+
+    var updatechart = () =>{updateChartData();};
+    var chart_ = setInterval(updatechart, 500);
+//--------------------------------------------------------------------------------
+

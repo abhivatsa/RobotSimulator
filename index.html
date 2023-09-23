@@ -31,8 +31,12 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#">Axis Limits</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="graphBtn">Graph</a>
+                        </li>
                     </ul>
                 </div>
+                <button type="button" class="btn btn-primary active" data-bs-toggle="button" aria-pressed="true" id="move_test" disabled>Move Test</button> <!-- REMOVE THIS -->
             </div>
         </nav>
     </div>
@@ -45,7 +49,7 @@
             <div class="mode-selection">
                 <div class="joint_name">Enable teach Mode</div>
                 <label class="switch">
-                    <input type="checkbox" disabled id="teachMode">
+                    <input type="checkbox" id="teachMode">
                     <span class="slider round"></span>
                 </label>
             </div>
@@ -53,7 +57,7 @@
             <div class="mode-selection">
                 <div class="joint_name">Enable Hand Controllers</div>
                 <label class="switch">
-                    <input type="checkbox" disabled id="handController">
+                    <input type="checkbox"  id="handController">
                     <span class="slider round"></span>
                 </label>
             </div>
@@ -81,7 +85,7 @@
 
                         <div class="joint_name">Base</div>
 
-                        <button class="minus_sign_container" id="joint1_neg">
+                        <button class="minus_sign_container jog" id="joint1_neg" mode="joint_space" index="1" direction="-1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 33.668 33.668" xml:space="preserve">
@@ -95,7 +99,7 @@
                         <input type="range" min="-400000" max="400000" value="50" class="slider_joint_val"
                             id="slider_j1" disabled>
 
-                        <button class="plus_sign_container" id="joint1_pos">
+                        <button class="plus_sign_container jog" id="joint1_pos" mode="joint_space" index="1" direction="1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 459.325 459.325" xml:space="preserve">
@@ -117,7 +121,7 @@
 
                         <div class="joint_name">Shoulder</div>
 
-                        <button class="minus_sign_container" id="joint1_neg">
+                        <button class="minus_sign_container jog" id="joint2_neg" mode="joint_space" index="2" direction="-1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 33.668 33.668" xml:space="preserve">
@@ -128,10 +132,10 @@
                             </svg>
                         </button>
 
-                        <input type="range" min="-400000" max="400000" value="50" class="slider_joint_val"
-                            id="slider_j1" disabled>
+                        <input type="range" min="-400000" max="400000" value="0" class="slider_joint_val"
+                            id="slider_j2" disabled>
 
-                        <button class="plus_sign_container" id="joint1_pos">
+                        <button class="plus_sign_container jog" id="joint2_pos" mode="joint_space" index="2" direction="1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 459.325 459.325" xml:space="preserve">
@@ -145,7 +149,7 @@
                             </svg>
                         </button>
 
-                        <div class="joint_values" id="joint_val_1">0</div>
+                        <div class="joint_values" id="joint_val_2">0</div>
 
                     </div>
 
@@ -153,7 +157,7 @@
 
                         <div class="joint_name">Elbow</div>
 
-                        <button class="minus_sign_container" id="joint1_neg">
+                        <button class="minus_sign_container jog" id="joint3_neg" mode="joint_space" index="3" direction="-1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 33.668 33.668" xml:space="preserve">
@@ -165,9 +169,9 @@
                         </button>
 
                         <input type="range" min="-400000" max="400000" value="50" class="slider_joint_val"
-                            id="slider_j1" disabled>
+                            id="slider_j3" disabled>
 
-                        <button class="plus_sign_container" id="joint1_pos">
+                        <button class="plus_sign_container jog" id="joint3_pos" mode="joint_space" index="3" direction="1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 459.325 459.325" xml:space="preserve">
@@ -181,7 +185,7 @@
                             </svg>
                         </button>
 
-                        <div class="joint_values" id="joint_val_1">0</div>
+                        <div class="joint_values" id="joint_val_3">0</div>
 
                     </div>
 
@@ -189,7 +193,7 @@
 
                         <div class="joint_name">Wrist-1</div>
 
-                        <button class="minus_sign_container" id="joint1_neg">
+                        <button class="minus_sign_container jog" id="joint4_neg" mode="joint_space" index="4" direction="-1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 33.668 33.668" xml:space="preserve">
@@ -201,9 +205,9 @@
                         </button>
 
                         <input type="range" min="-400000" max="400000" value="50" class="slider_joint_val"
-                            id="slider_j1" disabled>
+                            id="slider_j4" disabled>
 
-                        <button class="plus_sign_container" id="joint1_pos">
+                        <button class="plus_sign_container jog" id="joint4_pos" mode="joint_space" index="4" direction="1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 459.325 459.325" xml:space="preserve">
@@ -217,7 +221,7 @@
                             </svg>
                         </button>
 
-                        <div class="joint_values" id="joint_val_1">0</div>
+                        <div class="joint_values" id="joint_val_4">0</div>
 
                     </div>
 
@@ -225,7 +229,7 @@
 
                         <div class="joint_name">Wrist-2</div>
 
-                        <button class="minus_sign_container" id="joint1_neg">
+                        <button class="minus_sign_container jog" id="joint5_neg" mode="joint_space" index="5" direction="-1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 33.668 33.668" xml:space="preserve">
@@ -237,9 +241,9 @@
                         </button>
 
                         <input type="range" min="-400000" max="400000" value="50" class="slider_joint_val"
-                            id="slider_j1" disabled>
+                            id="slider_j5" disabled>
 
-                        <button class="plus_sign_container" id="joint1_pos">
+                        <button class="plus_sign_container jog" id="joint5_pos" mode="joint_space" index="5" direction="1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 459.325 459.325" xml:space="preserve">
@@ -253,7 +257,7 @@
                             </svg>
                         </button>
 
-                        <div class="joint_values" id="joint_val_1">0</div>
+                        <div class="joint_values" id="joint_val_5">0</div>
 
                     </div>
 
@@ -261,7 +265,7 @@
 
                         <div class="joint_name">Wrist-3</div>
 
-                        <button class="minus_sign_container" id="joint1_neg">
+                        <button class="minus_sign_container jog" id="joint6_neg" mode="joint_space" index="6" direction="-1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 33.668 33.668" xml:space="preserve">
@@ -273,9 +277,9 @@
                         </button>
 
                         <input type="range" min="-400000" max="400000" value="50" class="slider_joint_val"
-                            id="slider_j1" disabled>
+                            id="slider_j6" disabled>
 
-                        <button class="plus_sign_container" id="joint1_pos">
+                        <button class="plus_sign_container jog" id="joint6_pos" mode="joint_space" index="6" direction="1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 459.325 459.325" xml:space="preserve">
@@ -289,7 +293,7 @@
                             </svg>
                         </button>
 
-                        <div class="joint_values" id="joint_val_1">0</div>
+                        <div class="joint_values" id="joint_val_6">0</div>
 
                     </div>
 
@@ -302,7 +306,7 @@
 
                         <div class="joint_name">X</div>
 
-                        <button class="minus_sign_container" id="joint1_neg">
+                        <button class="minus_sign_container jog" id="cart_x_neg" mode="task_space" index="1" direction="-1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 33.668 33.668" xml:space="preserve">
@@ -314,9 +318,9 @@
                         </button>
 
                         <input type="range" min="-400000" max="400000" value="50" class="slider_joint_val"
-                            id="slider_j1" disabled>
+                            id="slider_x" disabled>
 
-                        <button class="plus_sign_container" id="joint1_pos">
+                        <button class="plus_sign_container jog" id="cart_x_pos" mode="task_space" index="1" direction="1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 459.325 459.325" xml:space="preserve">
@@ -330,7 +334,7 @@
                             </svg>
                         </button>
 
-                        <div class="joint_values" id="joint_val_1">0</div>
+                        <div class="joint_values" id="cart_val_x">0</div>
 
                     </div>
 
@@ -338,7 +342,7 @@
 
                         <div class="joint_name">Y</div>
 
-                        <button class="minus_sign_container" id="joint1_neg">
+                        <button class="minus_sign_container jog" id="cart_y_neg" mode="task_space" index="2" direction="-1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 33.668 33.668" xml:space="preserve">
@@ -350,9 +354,9 @@
                         </button>
 
                         <input type="range" min="-400000" max="400000" value="50" class="slider_joint_val"
-                            id="slider_j1" disabled>
+                            id="slider_y" disabled>
 
-                        <button class="plus_sign_container" id="joint1_pos">
+                        <button class="plus_sign_container jog" id="cart_y_pos" mode="task_space" index="2" direction="1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 459.325 459.325" xml:space="preserve">
@@ -366,7 +370,7 @@
                             </svg>
                         </button>
 
-                        <div class="joint_values" id="joint_val_1">0</div>
+                        <div class="joint_values" id="cart_val_y">0</div>
 
                     </div>
 
@@ -374,7 +378,7 @@
 
                         <div class="joint_name">Z</div>
 
-                        <button class="minus_sign_container" id="joint1_neg">
+                        <button class="minus_sign_container jog" id="cart_z_neg" mode="task_space" index="3" direction="-1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 33.668 33.668" xml:space="preserve">
@@ -386,9 +390,9 @@
                         </button>
 
                         <input type="range" min="-400000" max="400000" value="50" class="slider_joint_val"
-                            id="slider_j1" disabled>
+                            id="slider_z" disabled>
 
-                        <button class="plus_sign_container" id="joint1_pos">
+                        <button class="plus_sign_container jog" id="cart_z_pos" mode="task_space" index="3" direction="1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 459.325 459.325" xml:space="preserve">
@@ -402,7 +406,7 @@
                             </svg>
                         </button>
 
-                        <div class="joint_values" id="joint_val_1">0</div>
+                        <div class="joint_values" id="cart_val_z">0</div>
 
                     </div>
 
@@ -410,7 +414,7 @@
 
                         <div class="joint_name">Roll</div>
 
-                        <button class="minus_sign_container" id="joint1_neg">
+                        <button class="minus_sign_container jog" id="cart_roll_neg" mode="task_space" index="4" direction="-1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 33.668 33.668" xml:space="preserve">
@@ -422,9 +426,9 @@
                         </button>
 
                         <input type="range" min="-400000" max="400000" value="50" class="slider_joint_val"
-                            id="slider_j1" disabled>
+                            id="slider_roll" disabled>
 
-                        <button class="plus_sign_container" id="joint1_pos">
+                        <button class="plus_sign_container jog" id="cart_roll_pos" mode="task_space" index="4" direction="1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 459.325 459.325" xml:space="preserve">
@@ -438,7 +442,7 @@
                             </svg>
                         </button>
 
-                        <div class="joint_values" id="joint_val_1">0</div>
+                        <div class="joint_values" id="cart_val_roll">0</div>
 
                     </div>
 
@@ -446,7 +450,7 @@
 
                         <div class="joint_name">Pitch</div>
 
-                        <button class="minus_sign_container" id="joint1_neg">
+                        <button class="minus_sign_container jog" id="cart_pitch_neg" mode="task_space" index="5" direction="-1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 33.668 33.668" xml:space="preserve">
@@ -458,9 +462,9 @@
                         </button>
 
                         <input type="range" min="-400000" max="400000" value="50" class="slider_joint_val"
-                            id="slider_j1" disabled>
+                            id="slider_pitch" disabled>
 
-                        <button class="plus_sign_container" id="joint1_pos">
+                        <button class="plus_sign_container jog" id="cart_pitch_pos" mode="task_space" index="5" direction="1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 459.325 459.325" xml:space="preserve">
@@ -474,7 +478,7 @@
                             </svg>
                         </button>
 
-                        <div class="joint_values" id="joint_val_1">0</div>
+                        <div class="joint_values" id="cart_val_pitch">0</div>
 
                     </div>
 
@@ -482,7 +486,7 @@
 
                         <div class="joint_name">Yaw</div>
 
-                        <button class="minus_sign_container" id="joint1_neg">
+                        <button class="minus_sign_container jog" id="cart_yaw_neg" mode="task_space" index="6" direction="-1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 33.668 33.668" xml:space="preserve">
@@ -494,9 +498,9 @@
                         </button>
 
                         <input type="range" min="-400000" max="400000" value="50" class="slider_joint_val"
-                            id="slider_j1" disabled>
+                            id="slider_yaw" disabled>
 
-                        <button class="plus_sign_container" id="joint1_pos">
+                        <button class="plus_sign_container jog" id="cart_yaw_pos" mode="task_space" index="6" direction="1">
                             <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18px" height="18px"
                                 viewBox="0 0 459.325 459.325" xml:space="preserve">
@@ -510,7 +514,7 @@
                             </svg>
                         </button>
 
-                        <div class="joint_values" id="joint_val_1">0</div>
+                        <div class="joint_values" id="cart_val_yaw">0</div>
 
                     </div>
 
@@ -522,8 +526,11 @@
 
         </aside>
 
-        <article id="render-container">
+        <article id="render-container" style="position: relative;">
 
+            <div style="position: absolute; right: 0;" id="chartContainer">
+                <canvas id="myChart" width="400" height="200"> </canvas> 
+            </div>
         </article>
 
     </main>
@@ -542,7 +549,7 @@
             <div class="spinner-border spinner-border-sm visually-hidden" role="status" id="systemStateSpinner">
                 <span class="visually-hidden">Loading...</span>
             </div>
-            <span role="status" id="systemState">Powered OFF</span>
+            <span role="status" id="systemState">Powered OFF</span>    
         </div>
         
 
@@ -557,7 +564,7 @@
     </footer>
 
 
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <script src="./bootstrap-5.3.1-dist/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="main.js"></script>
 </body>
