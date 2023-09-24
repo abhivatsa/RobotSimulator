@@ -16,9 +16,10 @@ socket.onopen = function (e) {
 socket.onmessage = function (event) {
     // console.log(`[message] Data received from server`);
     let incomint_data = JSON.parse(event.data);
-    updateRobotState(incomint_data.current_state.positions);
+    // console.log(incomint_data)
+    updateRobotState(incomint_data.current_state.positions, incomint_data.current_state.velocities, incomint_data.current_state.torque);
     updateSystemState(incomint_data.system_state);
-    //   console.log(incomint_data)
+      
 };
 
 socket.onclose = function (event) {
@@ -90,12 +91,6 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(container.innerWidth, container.innerHeight);
 renderer.shadowMap.enabled = true;
 
-
-
-var div = document.createElement('div');
-div.style.position = "absolute";
-div.innerHTML = "hello";//'<canvas id="myChart" width="400" height="150" style="position: absolute;"></canvas>';
-renderer.domElement.appendChild(div);
 
 container.appendChild(renderer.domElement);
 
@@ -218,10 +213,11 @@ animate();
 
 var current_time = 0;
 var joint_positions = [0,0,0,0,0,0];
-
+var joint_velocities = [0,0,0,0,0,0];
+var joint_torque = [0,0,0,0,0,0];
 // Update robot state
 var update_cart_data_done = false;
-function updateRobotState(positions)
+function updateRobotState(positions, velocities, torque)
 {
     // console.log(positions);
     link1.rotation.y = positions.joint1;
@@ -252,28 +248,113 @@ function updateRobotState(positions)
     joint_positions[3] = positions.joint4;
     joint_positions[4] = positions.joint5;
     joint_positions[5] = positions.joint6;
+
+    joint_velocities[0] = velocities.joint1;
+    joint_velocities[1] = velocities.joint2;
+    joint_velocities[2] = velocities.joint3;
+    joint_velocities[3] = velocities.joint4;
+    joint_velocities[4] = velocities.joint5;
+    joint_velocities[5] = velocities.joint6;
+
+    joint_torque[0] = torque.joint1;
+    joint_torque[1] = torque.joint2;
+    joint_torque[2] = torque.joint3;
+    joint_torque[3] = torque.joint4;
+    joint_torque[4] = torque.joint5;
+    joint_torque[5] = torque.joint6;
+
     // updateChartData(positions);
 }
 
 function updateChartData()
 {
-    if(mychart.data.labels.length >= 10)
+    if(chart_x_data.length >= 10)
     {
-        mychart.data.labels.shift();
-        mychart.data.datasets[0].data.shift();
-        mychart.data.datasets[1].data.shift();
-        mychart.data.datasets[2].data.shift();
-        mychart.data.datasets[3].data.shift();
-        mychart.data.datasets[4].data.shift();
-        mychart.data.datasets[5].data.shift();
+        chart_x_data.shift();
+        chart_position1.shift();
+        chart_position2.shift();
+        chart_position3.shift();
+        chart_position4.shift();
+        chart_position5.shift();
+        chart_position6.shift();
+
+        chart_velocity1.shift();
+        chart_velocity2.shift();
+        chart_velocity3.shift();
+        chart_velocity4.shift();
+        chart_velocity5.shift();
+        chart_velocity6.shift();
+
+        chart_torque1.shift();
+        chart_torque2.shift();
+        chart_torque3.shift();
+        chart_torque4.shift();
+        chart_torque5.shift();
+        chart_torque6.shift();
     }
-    mychart.data.labels.push(current_time.toFixed(2));
-    mychart.data.datasets[0].data.push(joint_positions[0].toFixed(2));
-    mychart.data.datasets[1].data.push(joint_positions[1].toFixed(2));
-    mychart.data.datasets[2].data.push(joint_positions[2].toFixed(2));
-    mychart.data.datasets[3].data.push(joint_positions[3].toFixed(2));
-    mychart.data.datasets[4].data.push(joint_positions[4].toFixed(2));
-    mychart.data.datasets[5].data.push(joint_positions[5].toFixed(2));
+
+    chart_x_data.push(current_time.toFixed(2));
+    chart_position1.push(joint_positions[0].toFixed(2));
+    chart_position2.push(joint_positions[1].toFixed(2));
+    chart_position3.push(joint_positions[2].toFixed(2));
+    chart_position4.push(joint_positions[3].toFixed(2));
+    chart_position5.push(joint_positions[4].toFixed(2));
+    chart_position6.push(joint_positions[5].toFixed(2));
+
+    chart_velocity1.push(joint_velocities[0].toFixed(2));
+    chart_velocity2.push(joint_velocities[1].toFixed(2));
+    chart_velocity3.push(joint_velocities[2].toFixed(2));
+    chart_velocity4.push(joint_velocities[3].toFixed(2));
+    chart_velocity5.push(joint_velocities[4].toFixed(2));
+    chart_velocity6.push(joint_velocities[5].toFixed(2));
+
+    chart_torque1.push(joint_torque[0].toFixed(2));
+    chart_torque2.push(joint_torque[1].toFixed(2));
+    chart_torque3.push(joint_torque[2].toFixed(2));
+    chart_torque4.push(joint_torque[3].toFixed(2));
+    chart_torque5.push(joint_torque[4].toFixed(2));
+    chart_torque6.push(joint_torque[5].toFixed(2));
+
+    mychart.data.labels = chart_x_data;
+    if(show_chart_data == ShowChartData.Torque)
+    {
+        mychart.data.datasets[0].data = chart_torque1;
+        mychart.data.datasets[1].data = chart_torque2;
+        mychart.data.datasets[2].data = chart_torque3;
+        mychart.data.datasets[3].data = chart_torque4;
+        mychart.data.datasets[4].data = chart_torque5;
+        mychart.data.datasets[5].data = chart_torque6;
+
+        mychart.options.scales.yAxes[0].ticks.max = 10;
+        mychart.options.scales.yAxes[0].ticks.min = -10;
+        mychart.options.scales.yAxes[0].scaleLabel.labelString = "Joint torque (Nm)";
+    }
+    else if(show_chart_data == ShowChartData.Velocity)
+    {
+        mychart.data.datasets[0].data = chart_velocity1;
+        mychart.data.datasets[1].data = chart_velocity2;
+        mychart.data.datasets[2].data = chart_velocity3;
+        mychart.data.datasets[3].data = chart_velocity4;
+        mychart.data.datasets[4].data = chart_velocity5;
+        mychart.data.datasets[5].data = chart_velocity6;
+
+        mychart.options.scales.yAxes[0].ticks.max = 3.14;
+        mychart.options.scales.yAxes[0].ticks.min = -3.14;
+        mychart.options.scales.yAxes[0].scaleLabel.labelString = "Joint velocity (rad/s)";
+    }
+    else
+    {
+        mychart.data.datasets[0].data = chart_position1;
+        mychart.data.datasets[1].data = chart_position2;
+        mychart.data.datasets[2].data = chart_position3;
+        mychart.data.datasets[3].data = chart_position4;
+        mychart.data.datasets[4].data = chart_position5;
+        mychart.data.datasets[5].data = chart_position6;
+
+        mychart.options.scales.yAxes[0].ticks.max = 3.14;
+        mychart.options.scales.yAxes[0].ticks.min = -3.14;
+        mychart.options.scales.yAxes[0].scaleLabel.labelString = "Joint position (rad)";
+    }
     mychart.update();
 }
 
@@ -487,6 +568,10 @@ var yaw_slider = document.getElementById("slider_yaw");
 var graph_btn = document.getElementById("graphBtn");
 var chart_container = document.getElementById("chartContainer");
 
+var plot_position = document.getElementById("plot_position");
+var plot_velocity = document.getElementById("plot_velocity");
+var plot_torque = document.getElementById("plot_torque");
+
 const systemStateText = document.getElementById("systemState");
 const systemStateContainer = document.getElementById("systemStateContainer");
 const systemStateSpinner = document.getElementById("systemStateSpinner");
@@ -567,10 +652,12 @@ graph_btn.addEventListener("click", ()=>{
     if(chart_container.style.display == "none")
     {
        chart_container.style.display = "block";
+       renderer.domElement.style.display = "none";
     }
     else
     {
         chart_container.style.display = "none";
+        renderer.domElement.style.display = "block";
     }
 })
 
@@ -594,6 +681,41 @@ move_test.onclick = ()=>{
 
 
 //-------------------------------------- CHART JS --------------------
+var chart_x_data = Array(10).fill(0);
+
+var max_y_limit = 3.14;
+var y_axis_label = "Joint Position (rad)";
+
+
+var chart_position1 = Array(10).fill(0);
+var chart_position2 = Array(10).fill(0);
+var chart_position3 = Array(10).fill(0);
+var chart_position4 = Array(10).fill(0);
+var chart_position5 = Array(10).fill(0);
+var chart_position6 = Array(10).fill(0);
+
+var chart_velocity1 = Array(10).fill(0);
+var chart_velocity2 = Array(10).fill(0);
+var chart_velocity3 = Array(10).fill(0);
+var chart_velocity4 = Array(10).fill(0);
+var chart_velocity5 = Array(10).fill(0);
+var chart_velocity6 = Array(10).fill(0);
+
+var chart_torque1 = Array(10).fill(0);
+var chart_torque2 = Array(10).fill(0);
+var chart_torque3 = Array(10).fill(0);
+var chart_torque4 = Array(10).fill(0);
+var chart_torque5 = Array(10).fill(0);
+var chart_torque6 = Array(10).fill(0);
+
+const ShowChartData = {
+    Position: 'position',
+    Velocity: 'velocity',
+    Torque: 'torque'
+};
+
+var show_chart_data = ShowChartData.Position;
+
 var mychart = new Chart("myChart", {
     type: "line",
     data: {
@@ -657,13 +779,13 @@ var mychart = new Chart("myChart", {
         // ],
         yAxes : [{
             ticks : {
-                max : 3.14,    
-                min : -3.14,
+                max : max_y_limit,    
+                min : -max_y_limit,
                 stepSize: 0.1
             },
             scaleLabel: {
                 display: true,
-                labelString: 'Joint Position (rad)'
+                labelString: y_axis_label
               }
         }]
         },
@@ -685,5 +807,9 @@ var mychart = new Chart("myChart", {
 
     var updatechart = () =>{updateChartData();};
     var chart_ = setInterval(updatechart, 500);
+
+    plot_position.onclick = ()=>{show_chart_data = ShowChartData.Position;}
+    plot_velocity.onclick = ()=>{show_chart_data = ShowChartData.Velocity;}
+    plot_torque.onclick = ()=>{show_chart_data = ShowChartData.Torque;}
 //--------------------------------------------------------------------------------
 

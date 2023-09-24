@@ -528,8 +528,21 @@
 
         <article id="render-container" style="position: relative;">
 
-            <div style="position: absolute; right: 0;" id="chartContainer">
-                <canvas id="myChart" width="400" height="200"> </canvas> 
+            <div style="position: absolute; background-color: whitesmoke;" id="chartContainer">
+                <canvas id="myChart" width="768" height="576"> </canvas> 
+                <div style="position: absolute; right: 20px; top: 20px;">
+                    <div class="btn-group dropstart">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                          Plot
+                        </button>
+                        <ul class="dropdown-menu">
+                          <!-- Dropdown menu links -->
+                          <li><a class="dropdown-item" href="#" id="plot_position">Position</a></li>
+                          <li><a class="dropdown-item" href="#" id="plot_velocity">Velocity</a></li>
+                          <li><a class="dropdown-item" href="#" id="plot_torque">Torque</a></li>
+                        </ul>
+                      </div>
+                </div>
             </div>
         </article>
 
