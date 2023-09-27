@@ -644,7 +644,20 @@ for (let index = 0; index < jogButtons.length; index++) {
 
 // Mode button event handler
 teachMode.onclick  = () => {onModeChangeClicked(teachMode)};
-handControllerMode .onclick = () => {onModeChangeClicked(handControllerMode)};
+handControllerMode .onclick = () => {
+    onModeChangeClicked(handControllerMode);
+
+    var cmd_obj =
+        { 
+            command_data : {
+                type: 2,
+                }
+        };
+        socket.send(JSON.stringify(cmd_obj));
+
+
+
+};
 
 
 graph_btn.addEventListener("click", ()=>{
@@ -670,7 +683,7 @@ move_test.onclick = ()=>{
     var cmd_obj =
         { 
             command_data : {
-                type: 2,
+                type: 4,
                 }
         };
         socket.send(JSON.stringify(cmd_obj));
